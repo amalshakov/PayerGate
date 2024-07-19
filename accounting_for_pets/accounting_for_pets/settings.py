@@ -7,7 +7,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "DSK")
+SECRET_KEY = os.getenv("SECRET_KEY", "SK")
+
+API_KEY = os.getenv("API_KEY", "AK")
 
 DEBUG = os.getenv("DEBUG") == "True"
 
@@ -33,6 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "api.middleware.APIKeyMiddleware",
 ]
 
 ROOT_URLCONF = "accounting_for_pets.urls"
@@ -100,5 +103,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR.joinpath("media")
+
+SITE_URL = os.getenv("SITE_URL")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
