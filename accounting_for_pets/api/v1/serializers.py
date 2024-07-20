@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from pets.models import Pet, Photo
@@ -25,6 +27,20 @@ class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
         fields = ["id", "name", "age", "type", "photos", "created_at"]
+
+    def validate_age(self, value):
+        if value < 0 or value > 30:
+            raise serializers.ValidationError(
+                "Age must be between 0 and 30 inclusive."
+            )
+        return value
+
+    def validate_name(self, value):
+        if not re.match(r"^[A-Za-z]+$", value):
+            raise serializers.ValidationError(
+                "Name must contain only letters."
+            )
+        return value
 
     # def validate_type(self, value):
     #     if value not in ["cat", "dog"]:
