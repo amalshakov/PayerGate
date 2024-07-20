@@ -35,7 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "api.middleware.APIKeyMiddleware",
+    # "api.middleware.APIKeyMiddleware",
 ]
 
 ROOT_URLCONF = "accounting_for_pets.urls"
@@ -108,3 +108,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Максимальный размер загружаемых файлов (в байтах)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ),
+}
