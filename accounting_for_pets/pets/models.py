@@ -2,6 +2,7 @@ import re
 import uuid
 from typing import Optional
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
@@ -38,13 +39,20 @@ class Pet(models.Model):
             или имя содержит неалфавитные символы.
         """
         super().clean_fields(exclude=exclude)
-        if self.age < 0 or self.age > 30:
+
+        if self.age < settings.PET_AGE_MIN or self.age > settings.PET_AGE_MAX:
             raise ValidationError(
-                {"age": "Возраст должен быть от 0 до 30 включительно."}
+                {
+                    "age": (
+                        f"Возраст должен быть от {settings.PET_AGE_MIN} до "
+                        f"{settings.PET_AGE_MAX} включительно."
+                    )
+                }
             )
-        if not re.match(r"^[A-Za-z]+$", self.name):
+
+        if not re.match(settings.PET_NAME_REGEX, self.name):
             raise ValidationError(
-                {"name": "Имя должно содержать только буквы."}
+                {"name": "Имя питомца должно содержать только буквы."}
             )
 
     def __str__(self) -> str:

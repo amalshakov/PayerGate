@@ -115,3 +115,10 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
 }
+
+# Регулярное выражение для проверки валидности имени питомца (любые буквы)
+VALID_NAME_REGEX = r"^[A-Za-zА-Яа-я]+$"
+
+# Допустимые пределы возраста для питомцев
+PET_AGE_MIN = 0
+PET_AGE_MAX = 30

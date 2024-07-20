@@ -1,11 +1,13 @@
 import re
 
+from django.conf import settings
 from rest_framework import serializers
 
+from api.v1.mixins import PhotoURLMixin
 from pets.models import Pet, Photo
 
 
-class PhotoSerializer(serializers.ModelSerializer):
+class PhotoSerializer(serializers.ModelSerializer, PhotoURLMixin):
     """
     Сериализатор для модели Photo, включающий URL для фото.
     """
@@ -15,19 +17,6 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ["id", "url"]
-
-    def get_url(self, obj: Photo) -> str:
-        """
-        Получает полный URL для фото.
-
-        Аргументы:
-            obj (Photo): Экземпляр модели Photo.
-
-        Возвращает:
-            str: Полный URL для фото.
-        """
-        request = self.context.get("request")
-        return obj.get_full_url(request) if request else obj.file.url
 
 
 class PetSerializer(serializers.ModelSerializer):
@@ -54,7 +43,7 @@ class PetSerializer(serializers.ModelSerializer):
         Вызывает:
             serializers.ValidationError: Если возраст не в допустимых пределах.
         """
-        if value < 0 or value > 30:
+        if value < settings.PET_AGE_MIN or value > settings.PET_AGE_MAX:
             raise serializers.ValidationError(
                 "Возраст питомца должен быть от 0 до 30."
             )
@@ -73,14 +62,14 @@ class PetSerializer(serializers.ModelSerializer):
         Вызывает:
             serializers.ValidationError: Если имя содержит не только буквы.
         """
-        if not re.match(r"^[A-Za-z]+$", value):
+        if not re.match(settings.VALID_NAME_REGEX, value):
             raise serializers.ValidationError(
-                "Name must contain only letters."
+                "Имя питомца должно содержать только буквы."
             )
         return value
 
 
-class PhotoUploadSerializer(serializers.ModelSerializer):
+class PhotoUploadSerializer(serializers.ModelSerializer, PhotoURLMixin):
     """Сериализатор для загрузки фото, включающий URL для фото."""
 
     url = serializers.SerializerMethodField()
@@ -88,19 +77,6 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ["id", "file", "url"]
-
-    def get_url(self, obj: Photo) -> str:
-        """
-        Получает полный URL для фото.
-
-        Аргументы:
-            obj (Photo): Экземпляр модели Photo.
-
-        Возвращает:
-            str: Полный URL для фото.
-        """
-        request = self.context.get("request")
-        return obj.get_full_url(request) if request else obj.file.url
 
     def create(self, validated_data: dict) -> Photo:
         """
