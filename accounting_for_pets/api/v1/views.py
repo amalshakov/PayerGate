@@ -6,31 +6,38 @@ from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
-from api.v1.serializers import PetSerializer  # PetCreateSerializer,
-from api.v1.serializers import PhotoUploadSerializer
+from api.v1.serializers import PetSerializer, PhotoUploadSerializer
 from pets.models import Pet
 
 
 class PetViewSet(
     mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
 ):
-    """."""
+    """ViewSet для управления объектами модели Pet."""
 
     queryset = Pet.objects.all()
 
-    # def get_serializer_class(self):
-    #     if self.action == "create":
-    #         return PetCreateSerializer
-    #     if self.action == "upload_photo":
-    #         return PhotoUploadSerializer
-    #     return PetSerializer
+    def get_serializer_class(self) -> type:
+        """
+        Возвращает класс сериализатора в зависимости от действия.
 
-    def get_serializer_class(self):
+        Возвращает:
+            type: Класс сериализатора.
+        """
         if self.action == "upload_photo":
             return PhotoUploadSerializer
         return PetSerializer
 
-    def list(self, request):
+    def list(self, request) -> Response:
+        """
+        Возвращает список объектов Pet с возможностью фильтрации и пагинации.
+
+        Аргументы:
+            request (Request): HTTP запрос.
+
+        Возвращает:
+            Response: HTTP ответ с данными списка объектов.
+        """
         queryset = self.get_queryset()
 
         limit = request.query_params.get("limit", 20)
@@ -61,7 +68,16 @@ class PetViewSet(
 
         return Response({"count": total_count, "items": serializer.data})
 
-    def create(self, request):
+    def create(self, request) -> Response:
+        """
+        Создает новый объект Pet.
+
+        Аргументы:
+            request (Request): HTTP запрос.
+
+        Возвращает:
+            Response: HTTP ответ с данными созданного объекта.
+        """
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
         )
@@ -84,7 +100,17 @@ class PetViewSet(
         parser_classes=[MultiPartParser, FormParser],
         url_path="photo",
     )
-    def upload_photo(self, request, pk=None):
+    def upload_photo(self, request, pk=None) -> Response:
+        """
+        Загружает фото для объекта Pet.
+
+        Аргументы:
+            request (Request): HTTP запрос.
+            pk (str, optional): Первичный ключ объекта Pet.
+
+        Возвращает:
+            Response: HTTP ответ с данными загруженного фото.
+        """
         pet = self.get_object()
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
@@ -100,7 +126,13 @@ class PetViewSet(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
-    def destroy_photos(self, pet):
+    def destroy_photos(self, pet: Pet) -> None:
+        """
+        Удаляет все фото, связанные с объектом Pet.
+
+        Аргументы:
+            pet (Pet): Экземпляр модели Pet.
+        """
         photos = pet.photos.all()
         for photo in photos:
             file_path = photo.file.path
@@ -109,7 +141,16 @@ class PetViewSet(
             photo.delete()
 
     @action(detail=False, methods=["delete"])
-    def delete(self, request):
+    def delete(self, request) -> Response:
+        """
+        Удаляет объекты Pet по списку идентификаторов.
+
+        Аргументы:
+            request (Request): HTTP запрос.
+
+        Возвращает:
+            Response: HTTP ответ с информацией о результатах удаления.
+        """
         ids = request.data.get("ids", [])
         if not ids:
             return Response(
