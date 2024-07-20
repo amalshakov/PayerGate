@@ -139,5 +139,5 @@ class PetViewSet(
 
         return Response(
             {"deleted": deleted_count, "errors": errors},
-            status=status.HTTP_204_NO_CONTENT,
+            status=status.HTTP_200_OK,
         )
