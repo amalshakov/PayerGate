@@ -1,6 +1,8 @@
+import re
 import uuid
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -19,6 +21,15 @@ class Pet(models.Model):
     age = models.IntegerField()
     type = models.CharField(max_length=50, choices=PET_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        if self.age < 0 or self.age > 30:
+            raise ValidationError(
+                {"age": "Age must be between 0 and 30 inclusive."}
+            )
+        if not re.match(r"^[A-Za-z]+$", self.name):
+            raise ValidationError({"name": "Name must contain only letters."})
 
     def __str__(self) -> str:
         return self.name
