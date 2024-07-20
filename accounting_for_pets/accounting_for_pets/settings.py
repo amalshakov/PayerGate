@@ -35,7 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "api.middleware.APIKeyMiddleware",
+    "api.middleware.APIKeyMiddleware",
 ]
 
 ROOT_URLCONF = "accounting_for_pets.urls"
@@ -60,21 +60,14 @@ WSGI_APPLICATION = "accounting_for_pets.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "postgres"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
+        "HOST": os.getenv("DB_HOST", "db"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+    },
 }
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME", "postgres"),
-#         "USER": os.getenv("POSTGRES_USER", "postgres"),
-#         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
-#         "HOST": os.getenv("DB_HOST", "db"),
-#         "PORT": os.getenv("DB_PORT", "5432"),
-#     },
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -103,6 +96,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR.joinpath("media")
@@ -110,3 +104,7 @@ MEDIA_ROOT = BASE_DIR.joinpath("media")
 SITE_URL = os.getenv("SITE_URL")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Максимальный размер загружаемых файлов (в байтах)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
