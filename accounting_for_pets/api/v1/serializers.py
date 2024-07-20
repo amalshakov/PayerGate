@@ -9,7 +9,7 @@ from pets.models import Pet, Photo
 
 class PhotoSerializer(serializers.ModelSerializer, PhotoURLMixin):
     """
-    Сериализатор для модели Photo, включающий URL для фото.
+    Сериализатор для модели Photo, включающий URL для фотографии.
     """
 
     url = serializers.SerializerMethodField()
@@ -21,7 +21,7 @@ class PhotoSerializer(serializers.ModelSerializer, PhotoURLMixin):
 
 class PetSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для модели Pet, включающий связанные фото.
+    Сериализатор для модели Pet, включающий связанные фотографии.
     """
 
     photos = PhotoSerializer(many=True, read_only=True)
@@ -38,14 +38,21 @@ class PetSerializer(serializers.ModelSerializer):
             value (int): Возраст питомца.
 
         Возвращает:
-            int: Возраст, если он находится в пределах от 0 до 30 включительно.
+            int: Возраст, если он находится в пределах от
+            settings.PET_AGE_MIN до settings.PET_AGE_MAX включительно.
 
         Вызывает:
             serializers.ValidationError: Если возраст не в допустимых пределах.
         """
         if value < settings.PET_AGE_MIN or value > settings.PET_AGE_MAX:
             raise serializers.ValidationError(
-                "Возраст питомца должен быть от 0 до 30."
+                {
+                    "age": (
+                        "Возраст питомца должен быть от "
+                        f"{settings.PET_AGE_MIN} до "
+                        f"{settings.PET_AGE_MAX} включительно."
+                    )
+                }
             )
         return value
 
