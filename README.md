@@ -41,9 +41,9 @@ docker-compose exec django_backend python manage.py migrate
 - request body:
 ```
 {
-    "name": "palkan",
-    "age": 1,
-    "type": "dog"
+    "name": "mussi",
+    "age": 11,
+    "type": "cat"
 }
 ```
 
@@ -131,15 +131,15 @@ docker-compose exec django_backend python manage.py migrate
 ```
 
 - query parameters:
-limit: integer (optional, default=20)
-offset: integer (optional, default=0)
-has_photos: boolean (optional)
-has_photos: true - вернуть записи с фотографиями
-has_photos: false - вернуть записи без фотографий
-has_photos was not provided - вернуть все записи
+- - limit: integer (optional, default=20)
+- - offset: integer (optional, default=0)
+- - has_photos: boolean (optional)
+- - has_photos: true - вернуть записи с фотографиями
+- - has_photos: false - вернуть записи без фотографий
+- - has_photos was not provided - вернуть все записи
 
 - request:
-http://localhost/api/v1/pets/?limit=1&offset=0&has_photos=true
+- - http://localhost/api/v1/pets/?limit=1&offset=0&has_photos=true
 
 - response body:
 ```
@@ -168,7 +168,8 @@ http://localhost/api/v1/pets/?limit=1&offset=0&has_photos=true
 ```
 
 4) http://localhost/api/v1/pets/ DELETE (Удалить питомцев)
-- response body:
+
+- request body:
 ```
 {
     "ids": [
@@ -196,7 +197,7 @@ http://localhost/api/v1/pets/?limit=1&offset=0&has_photos=true
 }
 ```
 
-- Так же для доступа к админке, соберите статику и создайте суперюзера.
+- Так же для доступа к админке (если необходимо), соберите статику и создайте суперюзера.
 ```
 docker-compose exec django_backend python manage.py collectstatic
 docker-compose exec django_backend python manage.py createsuperuser
