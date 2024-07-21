@@ -35,7 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "api.middleware.APIKeyMiddleware",
+    "api.middleware.APIKeyMiddleware",
 ]
 
 ROOT_URLCONF = "accounting_for_pets.urls"
@@ -110,6 +110,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
+    "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%S",
 }
 
 # Максимальный размер загружаемых файлов (в байтах)
