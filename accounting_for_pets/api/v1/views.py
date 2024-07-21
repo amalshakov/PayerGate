@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.db import transaction
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -40,9 +41,11 @@ class PetViewSet(
         """
         queryset = self.get_queryset()
 
-        limit = request.query_params.get("limit", 20)
-        offset = request.query_params.get("offset", 0)
-        has_photos = request.query_params.get("has_photos", None)
+        limit = request.query_params.get("limit", settings.PAGINATION_LIMIT)
+        offset = request.query_params.get("offset", settings.PAGINATION_OFFSET)
+        has_photos = request.query_params.get(
+            "has_photos", settings.HAS_PHOTOS_DEFAULT
+        )
 
         try:
             limit = int(limit)

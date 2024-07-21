@@ -105,10 +105,6 @@ SITE_URL = os.getenv("SITE_URL")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Максимальный размер загружаемых файлов (в байтах)
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
-
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -116,9 +112,18 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Максимальный размер загружаемых файлов (в байтах)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
+
 # Регулярное выражение для проверки валидности имени питомца (любые буквы)
 VALID_NAME_REGEX = r"^[A-Za-zА-Яа-я]+$"
 
 # Допустимые пределы возраста для питомцев
 PET_AGE_MIN = 0
 PET_AGE_MAX = 30
+
+# Настройки пагинации для PetViewSet
+PAGINATION_LIMIT = 20
+PAGINATION_OFFSET = 0
+HAS_PHOTOS_DEFAULT = None
