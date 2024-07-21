@@ -8,6 +8,7 @@ git clone git@github.com:amalshakov/PayerGate.git
 
 - Создайте и активируйте виртуальное окружение
 ```
+cd PayerGate
 python -m venv venv
 source venv/Scripts/activate
 ```
